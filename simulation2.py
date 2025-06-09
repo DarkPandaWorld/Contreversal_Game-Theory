@@ -29,7 +29,7 @@ bot_distribution = {'B1': 0.5, 'B2': 0.5}
 # Neue Regel: Mensch kann Bot B2 melden
 report_threshold_b2 = 3      # B2 wird nach 3 Meldungen geblockt
 report_threshold_b1 = 8      # B1 wird nach 8 Meldungen geblockt (seltener)
-report_prob_b2 = 0.25        # H1 erkennt B2 relativ leicht
+report_prob_b2 = 0.75        # H1 erkennt B2 relativ leicht
 report_prob_b1 = 0.05        # H1 erkennt B1 fast nie
 
 # --- Bot-Populationen ---
@@ -79,6 +79,16 @@ for _ in range(rounds):
 
 
 # Plot results
+settings_text = (
+    f"H1/H2: {human_distribution['H1']*100:.0f}% / {human_distribution['H2']*100:.0f}%\n"
+    f"B1/B2: {bot_distribution['B1']*100:.0f}% / {bot_distribution['B2']*100:.0f}%\n"
+    f"Report Prob B1/B2: {report_prob_b1*100:.0f}% / {report_prob_b2*100:.0f}%\n"
+    f"Blocking Threshold B1/B2: {report_threshold_b1} / {report_threshold_b2}"
+)
+
+plt.subplots_adjust(bottom=0.2)
+plt.gcf().text(0.01, 0.01, settings_text, fontsize=9, verticalalignment='bottom')
+
 plt.plot(np.cumsum(human_scores), label='Human Payoff', color='red')
 plt.plot(np.cumsum(bot_scores), label='Bot Payoff', color='blue')
 plt.xlabel("Round")

@@ -36,6 +36,14 @@ for _ in range(rounds):
     bot_scores.append(b_payoff)
 
 # Plot results
+settings_text = (
+    f"H1/H2: {human_distribution['H1']*100:.0f}% / {human_distribution['H2']*100:.0f}%\n"
+    f"B1/B2: {bot_distribution['B1']*100:.0f}% / {bot_distribution['B2']*100:.0f}%\n"
+)
+
+plt.subplots_adjust(bottom=0.2)
+plt.gcf().text(0.01, 0.01, settings_text, fontsize=9, verticalalignment='bottom')
+
 plt.plot(np.cumsum(human_scores), label='Human Payoff', color='red')
 plt.plot(np.cumsum(bot_scores), label='Bot Payoff', color='blue')
 plt.xlabel("Round")

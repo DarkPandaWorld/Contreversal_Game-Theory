@@ -1,5 +1,6 @@
 import simulation1 as sim1
 import simulation2 as sim2
+import simulation1_5 as sim1_5
 
 # Change the followng lines to adjust the simulations
 games = 500          # Here we define the number of games that we run 
@@ -16,7 +17,8 @@ bot_total_score = 0
 # We create a mapping of the simulations to choose from, s.t. we only need to change one variable to switch between them
 sim_map = {
     1: sim1,
-    2: sim2
+    2: sim2,
+    1_5: sim1_5
 }
 
 # We check if the chosen simulation is valid (Error handling)

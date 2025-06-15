@@ -31,23 +31,36 @@ def simulate_game(games):
     bot_scores = []
 
     # Initialize penalty counts and strength
-    penalty_count = {'B1': 0, 'B2': 0}
     penalty_strength = 2  #linear factor: the higher, the harder
+    report_prob = 0.3  # probability that a problematic interaction leads to a report
+    
+     # Generate a pool of bot instances with individual penalty counters
+    bot_pool = []
+    num_bots = 10  # Number of bots in the pool, can be adjusted
+
+    # Initialize bot pool based on the number of bots and their distribution
+    for _ in range(num_bots):
+        bot_type = np.random.choice(['B1', 'B2'], p=[bot_distribution['B1'], bot_distribution['B2']])
+        bot_pool.append({'type': bot_type, 'penalty_count': 0})
 
     for _ in range(rounds):
         # Randomly pick strategies
         human = np.random.choice(['H1', 'H2'], p=[human_distribution['H1'], human_distribution['H2']])
-        bot = np.random.choice(['B1', 'B2'], p=[bot_distribution['B1'], bot_distribution['B2']])
         
-        # Get payoffs based on the chosen strategies
-        h_payoff, b_payoff = payoffs[(human, bot)]
+        # Select a random bot instance
+        bot = np.random.choice(bot_pool)
+        bot_type = bot['type']
 
-        # Check for penalties
-        if (human == 'H1' and bot == 'B2') or (human == 'H2' and bot == 'B2' and h_payoff < 0):
-            penalty_count[bot] += 1
+        # Get payoffs based on the chosen strategies
+        h_payoff, b_payoff = payoffs[(human, bot_type)]
+
+        # Check if this interaction warrants a report
+        if (human == 'H1' and bot_type == 'B2') or (human == 'H2' and bot_type == 'B2' and h_payoff < 0):
+            if np.random.rand() < report_prob:
+                bot['penalty_count'] += 1
 
         # Calculate penalty
-        penalty = penalty_strength * penalty_count[bot]
+        penalty = penalty_strength * bot['penalty_count']
         b_payoff -= penalty  # Apply penalty to bot's payoff
         
         # Update scores

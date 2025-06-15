@@ -25,10 +25,10 @@ human_distribution = {'H1': 0.5, 'H2': 0.5}
 bot_distribution = {'B1': 0.5, 'B2': 0.5}
 
 # New Rule: Humans can report Bots
-report_threshold_b1 = 8      # B1 wird nach 8 Meldungen geblockt (seltener)
-report_threshold_b2 = 3      # B2 wird nach 3 Meldungen geblockt
-report_prob_b1 = 0.05        # H1 erkennt B1 fast nie
-report_prob_b2 = 0.75        # H1 erkennt B2 relativ leicht
+report_threshold_b1 = 8      # B1 will get blocked after 8 reports (more common)
+report_threshold_b2 = 3      # B2 wwill get blocked after 3 reports (less common)
+report_prob_b1 = 0.05        # H1 recognizes B1 with low probability
+report_prob_b2 = 0.75        # H1 recognizes B2 with high probability
 
 def simulate_game(games):
     # Bots initialized with reports and blocked status
@@ -51,7 +51,9 @@ def simulate_game(games):
         # Select an active bot based on type
         if bot_type == 'B1':
             active_bots = [b for b in b1_bots if not b['blocked']] # Filter out blocked bots
-            if not active_bots:                                    # If no active bots, skip this round
+            if not active_bots:                                    # If no active bots, humans get there penalties
+                h_payoff, b_payoff = payoffs[(human, bot_type)]
+                human_scores.append(h_payoff)
                 continue
             bot = np.random.choice(active_bots)                     # Randomly select one of the active bots
             threshold = report_threshold_b1                         # Set threshold for reporting 
@@ -61,6 +63,8 @@ def simulate_game(games):
         else:
             active_bots = [b for b in b2_bots if not b['blocked']]
             if not active_bots:
+                h_payoff, b_payoff = payoffs[(human, bot_type)]
+                human_scores.append(h_payoff)
                 continue
             bot = np.random.choice(active_bots)
             threshold = report_threshold_b2
@@ -113,3 +117,4 @@ def simulate_game(games):
 
     #For data analysis, we can return the scores
     return sum(human_scores), sum(bot_scores)
+
